@@ -1,0 +1,144 @@
+/* Window Tab Bar Container */
+.window-tab-bar {
+    background-color: rgba(30, 30, 30, 0.95);
+    border-radius: 6px;
+    padding: 2px 4px;
+    margin: 4px 8px;
+    spacing: 4px;
+}
+
+/* Tab Scroll View */
+.window-tab-scroll {
+    background-color: transparent;
+    border: none;
+}
+
+/* Tab Container */
+.window-tab-container {
+    spacing: 2px;
+    padding: 0px;
+}
+
+/* Individual Tab */
+.window-tab {
+    background-color: rgba(60, 60, 60, 0.8);
+    border: 1px solid rgba(80, 80, 80, 0.5);
+    border-radius: 4px;
+    padding: 4px 8px;
+    margin: 2px;
+    min-width: 120px;
+    max-width: 200px;
+    transition-duration: 200ms;
+}
+
+.window-tab:hover {
+    background-color: rgba(80, 80, 80, 0.9);
+    border-color: rgba(100, 100, 100, 0.8);
+}
+
+.window-tab:active,
+.window-tab.active {
+    background-color: rgba(53, 132, 228, 0.9);
+    border-color: rgba(53, 132, 228, 1.0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Tab Content Box */
+.window-tab-box {
+    spacing: 8px;
+    padding: 0px;
+}
+
+.window-tab-box StLabel {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 11pt;
+    font-weight: normal;
+}
+
+.window-tab.active .window-tab-box StLabel {
+    color: rgba(255, 255, 255, 1.0);
+    font-weight: bold;
+}
+
+/* Tab Close Button */
+.window-tab-close {
+    background-color: transparent;
+    border: none;
+    border-radius: 3px;
+    padding: 2px;
+    min-width: 16px;
+    min-height: 16px;
+}
+
+.window-tab-close:hover {
+    background-color: rgba(255, 100, 100, 0.8);
+}
+
+.window-tab-close:active {
+    background-color: rgba(255, 80, 80, 1.0);
+}
+
+.window-tab-close StIcon {
+    color: rgba(255, 255, 255, 0.8);
+    icon-size: 12px;
+}
+
+.window-tab-close:hover StIcon {
+    color: rgba(255, 255, 255, 1.0);
+}
+
+/* New Tab Button */
+.window-tab-new {
+    background-color: rgba(60, 60, 60, 0.8);
+    border: 1px solid rgba(80, 80, 80, 0.5);
+    border-radius: 4px;
+    padding: 6px;
+    margin: 2px;
+    min-width: 28px;
+    min-height: 28px;
+}
+
+.window-tab-new:hover {
+    background-color: rgba(80, 80, 80, 0.9);
+    border-color: rgba(100, 100, 100, 0.8);
+}
+
+.window-tab-new:active {
+    background-color: rgba(100, 100, 100, 1.0);
+}
+
+.window-tab-new StIcon {
+    color: rgba(255, 255, 255, 0.9);
+    icon-size: 16px;
+}
+
+/* Panel Button Override */
+.panel-button {
+    padding: 0px;
+}
+
+.panel-button .window-tab-bar {
+    margin: 0px;
+}
+
+/* Scrollbar Styling */
+.window-tab-scroll StScrollBar {
+    background-color: transparent;
+}
+
+.window-tab-scroll StScrollBar StButton {
+    background-color: rgba(80, 80, 80, 0.6);
+    border-radius: 2px;
+    min-height: 4px;
+}
+
+.window-tab-scroll StScrollBar StButton:hover {
+    background-color: rgba(100, 100, 100, 0.8);
+}
+
+/* Animation for tab switching */
+.window-tab {
+    transition-property: background-color, border-color, box-shadow;
+    transition-duration: 150ms;
+    transition-timing-function: ease-in-out;
+}

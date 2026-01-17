@@ -1,0 +1,23 @@
+# Compiled GSettings schemas
+schemas/gschemas.compiled
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+
+# Node modules (if using any JS tooling)
+node_modules/
+
+# Logs
+*.log

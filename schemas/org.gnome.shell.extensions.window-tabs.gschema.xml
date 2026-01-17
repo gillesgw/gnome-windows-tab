@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.window-tabs" path="/org/gnome/shell/extensions/window-tabs/">
+
+    <!-- Appearance Settings -->
+    <key name="tab-position" enum="org.gnome.shell.extensions.window-tabs.TabPosition">
+      <default>'top-panel'</default>
+      <summary>Tab bar position</summary>
+      <description>
+        Where to display the tab bar (top panel or window title bar)
+      </description>
+    </key>
+
+    <key name="show-app-icons" type="b">
+      <default>true</default>
+      <summary>Show application icons</summary>
+      <description>
+        Whether to display application icons in tabs
+      </description>
+    </key>
+
+    <!-- Behavior Settings -->
+    <key name="auto-group-windows" type="b">
+      <default>true</default>
+      <summary>Auto-group new windows</summary>
+      <description>
+        Automatically add new windows to the current tab group
+      </description>
+    </key>
+
+    <key name="close-tab-action" enum="org.gnome.shell.extensions.window-tabs.CloseTabAction">
+      <default>'close-window'</default>
+      <summary>Close tab action</summary>
+      <description>
+        What happens when you close a tab (close window, minimize, or remove from group)
+      </description>
+    </key>
+
+    <!-- Tab Management -->
+    <key name="max-tabs-per-group" type="i">
+      <default>10</default>
+      <range min="2" max="20"/>
+      <summary>Maximum tabs per group</summary>
+      <description>
+        Maximum number of tabs allowed in a single tab group
+      </description>
+    </key>
+
+  </schema>
+
+  <!-- Enums -->
+  <enum id="org.gnome.shell.extensions.window-tabs.TabPosition">
+    <value nick="top-panel" value="0"/>
+    <value nick="window-title-bar" value="1"/>
+  </enum>
+
+  <enum id="org.gnome.shell.extensions.window-tabs.CloseTabAction">
+    <value nick="close-window" value="0"/>
+    <value nick="minimize-window" value="1"/>
+    <value nick="remove-from-group" value="2"/>
+  </enum>
+
+</schemalist>

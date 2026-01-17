@@ -1,0 +1,12 @@
+{
+  "uuid": "window-tabs@gnome-shell-extensions",
+  "name": "Window Tabs",
+  "description": "Add macOS-style window tabs to GNOME. Group multiple windows into tabs for better organization and workflow.",
+  "version": 1,
+  "shell-version": [
+    "45",
+    "46"
+  ],
+  "url": "https://github.com/gillesgw/gnome-windows-tab",
+  "settings-schema": "org.gnome.shell.extensions.window-tabs"
+}
