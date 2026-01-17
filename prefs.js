@@ -1,26 +1,172 @@
 import Adw from 'gi://Adw';
 import Gtk from 'gi://Gtk';
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+
+// Custom row for application selection
+const AppRow = GObject.registerClass(
+class AppRow extends Adw.ActionRow {
+    _init(appInfo, isEnabled, onToggle) {
+        super._init({
+            title: appInfo.get_display_name(),
+            subtitle: appInfo.get_id(),
+        });
+
+        this._appId = appInfo.get_id();
+
+        // App icon
+        const icon = new Gtk.Image({
+            gicon: appInfo.get_icon(),
+            pixel_size: 32,
+        });
+        this.add_prefix(icon);
+
+        // Toggle switch
+        this._switch = new Gtk.Switch({
+            active: isEnabled,
+            valign: Gtk.Align.CENTER,
+        });
+        this._switch.connect('notify::active', () => {
+            onToggle(this._appId, this._switch.get_active());
+        });
+        this.add_suffix(this._switch);
+        this.set_activatable_widget(this._switch);
+    }
+
+    get appId() {
+        return this._appId;
+    }
+
+    setEnabled(enabled) {
+        this._switch.set_active(enabled);
+    }
+});
 
 export default class WindowTabsPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         const settings = this.getSettings();
 
-        // Create a preferences page
-        const page = new Adw.PreferencesPage({
-            title: 'General',
-            icon_name: 'dialog-information-symbolic',
+        // ===== Applications Page =====
+        const appsPage = new Adw.PreferencesPage({
+            title: 'Applications',
+            icon_name: 'application-x-executable-symbolic',
         });
-        window.add(page);
+        window.add(appsPage);
+
+        // Enabled apps group
+        const enabledAppsGroup = new Adw.PreferencesGroup({
+            title: 'Applications activées',
+            description: 'Sélectionnez les applications qui utiliseront les onglets de fenêtre',
+        });
+        appsPage.add(enabledAppsGroup);
+
+        // Info row
+        const infoRow = new Adw.ActionRow({
+            title: 'Configuration requise',
+            subtitle: 'Seules les applications sélectionnées auront les onglets. Par défaut, aucune application n\'est activée.',
+        });
+        infoRow.add_prefix(new Gtk.Image({
+            icon_name: 'dialog-information-symbolic',
+            pixel_size: 24,
+        }));
+        enabledAppsGroup.add(infoRow);
+
+        // Search entry
+        const searchEntry = new Gtk.SearchEntry({
+            placeholder_text: 'Rechercher une application...',
+            margin_top: 12,
+            margin_bottom: 6,
+            margin_start: 12,
+            margin_end: 12,
+        });
+
+        const searchRow = new Adw.PreferencesRow({
+            child: searchEntry,
+        });
+        enabledAppsGroup.add(searchRow);
+
+        // Apps list group
+        const appsListGroup = new Adw.PreferencesGroup({
+            title: 'Applications disponibles',
+        });
+        appsPage.add(appsListGroup);
+
+        // Get enabled apps
+        let enabledApps = new Set(settings.get_strv('enabled-apps'));
+
+        // Store app rows for filtering
+        const appRows = [];
+
+        // Load applications
+        const appInfos = Gio.AppInfo.get_all()
+            .filter(app => {
+                // Only show apps that can open windows
+                if (!app.should_show()) return false;
+                const id = app.get_id();
+                if (!id) return false;
+                // Filter out some system apps
+                if (id.includes('org.gnome.Settings')) return false;
+                if (id.includes('gnome-extensions')) return false;
+                return true;
+            })
+            .sort((a, b) => a.get_display_name().localeCompare(b.get_display_name()));
+
+        // Update settings when an app is toggled
+        const onToggle = (appId, enabled) => {
+            if (enabled) {
+                enabledApps.add(appId);
+            } else {
+                enabledApps.delete(appId);
+            }
+            settings.set_strv('enabled-apps', [...enabledApps]);
+        };
+
+        // Create rows for each app
+        for (const appInfo of appInfos) {
+            const appId = appInfo.get_id();
+            const isEnabled = enabledApps.has(appId);
+            const row = new AppRow(appInfo, isEnabled, onToggle);
+            appsListGroup.add(row);
+            appRows.push({
+                row,
+                appId,
+                name: appInfo.get_display_name().toLowerCase(),
+            });
+        }
+
+        // Search filter
+        searchEntry.connect('search-changed', () => {
+            const query = searchEntry.get_text().toLowerCase();
+            for (const {row, name, appId} of appRows) {
+                const visible = name.includes(query) || appId.toLowerCase().includes(query);
+                row.set_visible(visible);
+            }
+        });
+
+        // Listen for external settings changes
+        settings.connect('changed::enabled-apps', () => {
+            enabledApps = new Set(settings.get_strv('enabled-apps'));
+            for (const {row, appId} of appRows) {
+                row.setEnabled(enabledApps.has(appId));
+            }
+        });
+
+        // ===== Settings Page =====
+        const settingsPage = new Adw.PreferencesPage({
+            title: 'Paramètres',
+            icon_name: 'preferences-system-symbolic',
+        });
+        window.add(settingsPage);
 
         // Appearance Group
         const appearanceGroup = new Adw.PreferencesGroup({
             title: 'Apparence',
             description: 'Personnaliser l\'apparence des onglets de fenêtre',
         });
-        page.add(appearanceGroup);
+        settingsPage.add(appearanceGroup);
 
         // Show app icons
         const showIconsRow = new Adw.SwitchRow({
@@ -40,7 +186,7 @@ export default class WindowTabsPreferences extends ExtensionPreferences {
             title: 'Comportement',
             description: 'Configurer le comportement des onglets',
         });
-        page.add(behaviorGroup);
+        settingsPage.add(behaviorGroup);
 
         // Auto-group windows
         const autoGroupRow = new Adw.SwitchRow({
@@ -86,80 +232,56 @@ export default class WindowTabsPreferences extends ExtensionPreferences {
         });
         behaviorGroup.add(maxTabsRow);
 
-        // Features Group
-        const featuresGroup = new Adw.PreferencesGroup({
-            title: 'Fonctionnalités',
-            description: 'Activer ou désactiver les fonctionnalités',
+        // ===== About Page =====
+        const aboutPage = new Adw.PreferencesPage({
+            title: 'À propos',
+            icon_name: 'help-about-symbolic',
         });
-        page.add(featuresGroup);
-
-        // Info about features
-        const featuresInfoRow = new Adw.ActionRow({
-            title: 'Fonctionnalités actives',
-            subtitle: '• Regroupement automatique par application\n' +
-                      '• Onglets sous la barre de titre\n' +
-                      '• Drag and drop pour réorganiser\n' +
-                      '• Détacher les onglets en fenêtres séparées',
-        });
-        featuresGroup.add(featuresInfoRow);
-
-        // Keyboard Shortcuts Group
-        const shortcutsGroup = new Adw.PreferencesGroup({
-            title: 'Raccourcis clavier',
-            description: 'Raccourcis pour la navigation entre onglets',
-        });
-        page.add(shortcutsGroup);
-
-        // Info row
-        const shortcutsInfoRow = new Adw.ActionRow({
-            title: 'Raccourcis par défaut',
-            subtitle: 'Cliquer sur un onglet : Activer la fenêtre\n' +
-                      'Bouton × : Fermer l\'onglet\n' +
-                      'Bouton + : Nouvelle fenêtre dans le groupe\n' +
-                      'Drag and drop : Réorganiser ou détacher les onglets',
-        });
-        shortcutsGroup.add(shortcutsInfoRow);
+        window.add(aboutPage);
 
         // About Group
         const aboutGroup = new Adw.PreferencesGroup({
-            title: 'À propos',
-            description: 'Extension Window Tabs',
-        });
-        page.add(aboutGroup);
-
-        const aboutRow = new Adw.ActionRow({
             title: 'Window Tabs',
-            subtitle: 'Onglets de fenêtre style macOS pour GNOME\n' +
-                      'Version 1.0 - Réécrit avec architecture native',
+            description: 'Onglets de fenêtre style macOS pour GNOME',
         });
-        aboutGroup.add(aboutRow);
+        aboutPage.add(aboutGroup);
 
-        const linkRow = new Adw.ActionRow({
-            title: 'Page du projet',
-            subtitle: 'https://github.com/gillesgw/gnome-windows-tab',
+        const versionRow = new Adw.ActionRow({
+            title: 'Version',
+            subtitle: '1.0',
         });
-        linkRow.add_suffix(new Gtk.Image({
-            icon_name: 'web-browser-symbolic',
-        }));
-        linkRow.set_activatable(true);
-        linkRow.connect('activated', () => {
-            Gtk.show_uri(window, 'https://github.com/gillesgw/gnome-windows-tab', null);
-        });
-        aboutGroup.add(linkRow);
+        aboutGroup.add(versionRow);
 
+        // Usage Group
         const usageGroup = new Adw.PreferencesGroup({
             title: 'Utilisation',
             description: 'Comment utiliser Window Tabs',
         });
-        page.add(usageGroup);
+        aboutPage.add(usageGroup);
 
         const usageRow = new Adw.ActionRow({
             title: 'Comment ça marche ?',
-            subtitle: '1. Ouvrez deux fenêtres de la même application\n' +
-                      '2. Les onglets apparaissent automatiquement sous la barre de titre\n' +
-                      '3. Cliquez sur un onglet pour basculer entre les fenêtres\n' +
-                      '4. Glissez-déposez pour réorganiser ou détacher les onglets',
+            subtitle: '1. Activez les applications dans l\'onglet "Applications"\n' +
+                      '2. Ouvrez deux fenêtres de la même application\n' +
+                      '3. Les onglets apparaissent automatiquement au-dessus de la fenêtre\n' +
+                      '4. Cliquez sur un onglet pour basculer entre les fenêtres\n' +
+                      '5. Utilisez le bouton de dégroupement pour séparer un onglet',
         });
         usageGroup.add(usageRow);
+
+        const shortcutsGroup = new Adw.PreferencesGroup({
+            title: 'Actions',
+            description: 'Boutons disponibles sur chaque onglet',
+        });
+        aboutPage.add(shortcutsGroup);
+
+        const shortcutsRow = new Adw.ActionRow({
+            title: 'Boutons des onglets',
+            subtitle: '• Clic sur l\'onglet : Activer la fenêtre\n' +
+                      '• Icône fenêtre : Dégrouper l\'onglet\n' +
+                      '• Bouton × : Fermer la fenêtre\n' +
+                      '• Bouton + : Nouvelle fenêtre dans le groupe',
+        });
+        shortcutsGroup.add(shortcutsRow);
     }
 }

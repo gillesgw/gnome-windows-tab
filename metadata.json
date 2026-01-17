@@ -5,7 +5,9 @@
   "version": 1,
   "shell-version": [
     "45",
-    "46"
+    "46",
+    "47",
+    "48"
   ],
   "url": "https://github.com/gillesgw/gnome-windows-tab",
   "settings-schema": "org.gnome.shell.extensions.window-tabs"

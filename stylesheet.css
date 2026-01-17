@@ -1,214 +1,132 @@
-/* Window Tab Bar Overlay - appears below window title bar */
-.window-tab-bar-overlay {
-    background-color: rgba(36, 36, 36, 0.98);
-    border: 1px solid rgba(0, 0, 0, 0.5);
-    border-top: none;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-    padding: 4px 6px;
-    spacing: 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-}
+/* Window Tabs - Terminal-style tab bar */
 
-/* Tab Scroll View */
-.window-tab-scroll {
-    background-color: transparent;
+.window-tab-bar {
+    background-color: #1e1e1e;
     border: none;
+    border-radius: 0;
+    padding: 0;
+    spacing: 0;
 }
 
-/* Tab Container */
-.window-tab-container {
-    spacing: 3px;
-    padding: 0px;
+.window-tab-bar-container {
+    spacing: 0;
 }
 
-/* Individual Tab Item */
-.window-tab-item {
-    background-color: rgba(66, 66, 66, 0.85);
-    border: 1px solid rgba(90, 90, 90, 0.6);
-    border-radius: 5px;
-    padding: 5px 10px;
-    margin: 0px;
-    min-width: 150px;
-    max-width: 250px;
-    transition-duration: 150ms;
-}
-
-.window-tab-item:hover {
-    background-color: rgba(86, 86, 86, 0.95);
-    border-color: rgba(120, 120, 120, 0.8);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.window-tab-item:active,
-.window-tab-item.active {
-    background: linear-gradient(180deg,
-        rgba(53, 132, 228, 0.95) 0%,
-        rgba(28, 113, 216, 0.95) 100%);
-    border-color: rgba(53, 132, 228, 1.0);
-    box-shadow: 0 2px 6px rgba(53, 132, 228, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-
-/* Tab Content Box */
-.window-tab-box {
-    spacing: 10px;
-    padding: 0px;
-}
-
-.window-tab-box StLabel {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 10.5pt;
-    font-weight: 500;
-}
-
-.window-tab-item.active .window-tab-box StLabel {
-    color: rgba(255, 255, 255, 1.0);
-    font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.window-tab-item:hover .window-tab-box StLabel {
-    color: rgba(255, 255, 255, 0.95);
-}
-
-/* Tab Icon */
-.window-tab-box StBin {
-    padding: 0px;
-}
-
-/* Tab Close Button */
-.window-tab-close {
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    padding: 3px;
-    min-width: 18px;
-    min-height: 18px;
+/* Individual tab */
+.window-tab {
+    background-color: #2d2d2d;
+    border: none;
+    border-right: 1px solid #1a1a1a;
+    border-radius: 0;
+    padding: 6px 12px;
+    spacing: 8px;
+    min-width: 120px;
     transition-duration: 100ms;
 }
 
-.window-tab-close:hover {
-    background-color: rgba(255, 100, 100, 0.9);
-    border-color: rgba(255, 120, 120, 1.0);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+.window-tab:hover {
+    background-color: #3a3a3a;
 }
 
-.window-tab-close:active {
-    background-color: rgba(235, 60, 60, 1.0);
-    border-color: rgba(220, 40, 40, 1.0);
+.window-tab.active {
+    background-color: #404040;
+}
+
+/* Tab number */
+.window-tab-number {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    font-weight: 400;
+    min-width: 14px;
+}
+
+.window-tab.active .window-tab-number {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Tab label */
+.window-tab-label {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.window-tab:hover .window-tab-label {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.window-tab.active .window-tab-label {
+    color: #ffffff;
+}
+
+/* Tab close button */
+.window-tab-close {
+    background: transparent;
+    border-radius: 4px;
+    padding: 2px;
+    margin-left: 8px;
+    opacity: 0;
+    transition-duration: 100ms;
+}
+
+.window-tab:hover .window-tab-close {
+    opacity: 255;
+}
+
+.window-tab-close:hover {
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
 .window-tab-close StIcon {
-    color: rgba(255, 255, 255, 0.7);
-    icon-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .window-tab-close:hover StIcon {
-    color: rgba(255, 255, 255, 1.0);
-}
-
-/* Active tab close button */
-.window-tab-item.active .window-tab-close {
-    background-color: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.25);
-}
-
-.window-tab-item.active .window-tab-close StIcon {
     color: rgba(255, 255, 255, 0.9);
 }
 
-/* New Tab Button */
+/* Ungroup button */
+.window-tab-ungroup {
+    background: transparent;
+    border-radius: 4px;
+    padding: 2px;
+    margin-left: 4px;
+    opacity: 0;
+    transition-duration: 100ms;
+}
+
+.window-tab:hover .window-tab-ungroup {
+    opacity: 255;
+}
+
+.window-tab-ungroup:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.window-tab-ungroup StIcon {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.window-tab-ungroup:hover StIcon {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* New tab button */
 .window-tab-new {
-    background-color: rgba(66, 66, 66, 0.85);
-    border: 1px solid rgba(90, 90, 90, 0.6);
-    border-radius: 5px;
-    padding: 7px;
-    margin: 0px 2px;
-    min-width: 32px;
-    min-height: 32px;
-    transition-duration: 150ms;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 6px 12px;
 }
 
 .window-tab-new:hover {
-    background-color: rgba(86, 86, 86, 0.95);
-    border-color: rgba(120, 120, 120, 0.8);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.window-tab-new:active {
-    background-color: rgba(53, 132, 228, 0.9);
-    border-color: rgba(53, 132, 228, 1.0);
+    background-color: #3a3a3a;
 }
 
 .window-tab-new StIcon {
-    color: rgba(255, 255, 255, 0.85);
-    icon-size: 16px;
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .window-tab-new:hover StIcon {
-    color: rgba(255, 255, 255, 1.0);
-}
-
-/* Scrollbar Styling */
-.window-tab-scroll StScrollBar {
-    background-color: transparent;
-    padding: 0px;
-}
-
-.window-tab-scroll StScrollBar StButton {
-    background-color: rgba(100, 100, 100, 0.5);
-    border-radius: 3px;
-    min-height: 5px;
-    min-width: 5px;
-}
-
-.window-tab-scroll StScrollBar StButton:hover {
-    background-color: rgba(120, 120, 120, 0.7);
-}
-
-.window-tab-scroll StScrollBar StButton:active {
-    background-color: rgba(53, 132, 228, 0.8);
-}
-
-/* Drag and Drop feedback */
-.window-tab-item:insensitive {
-    opacity: 0.5;
-}
-
-/* Animation for tab switching */
-.window-tab-item {
-    transition-property: background-color, background, border-color, box-shadow;
-    transition-duration: 150ms;
-    transition-timing-function: ease-in-out;
-}
-
-/* Dark theme variant adjustments */
-.window-tab-bar-overlay {
-    background: linear-gradient(180deg,
-        rgba(40, 40, 40, 0.98) 0%,
-        rgba(32, 32, 32, 0.98) 100%);
-}
-
-/* Ensure proper layering */
-.window-tab-bar-overlay {
-    z-index: 100;
-}
-
-/* Hover effect on entire tab bar */
-.window-tab-bar-overlay:hover {
-    background: linear-gradient(180deg,
-        rgba(44, 44, 44, 0.98) 0%,
-        rgba(36, 36, 36, 0.98) 100%);
-}
-
-/* Focus ring for accessibility */
-.window-tab-item:focus {
-    border-color: rgba(53, 132, 228, 0.8);
-    box-shadow: 0 0 0 2px rgba(53, 132, 228, 0.3);
-}
-
-/* Ensure text doesn't overflow */
-.window-tab-box StLabel {
-    max-width: 180px;
+    color: rgba(255, 255, 255, 0.9);
 }

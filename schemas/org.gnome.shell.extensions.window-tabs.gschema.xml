@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
+
+  <!-- Enums must be defined before they are referenced -->
+  <enum id="org.gnome.shell.extensions.window-tabs.TabPosition">
+    <value nick="top-panel" value="0"/>
+    <value nick="window-title-bar" value="1"/>
+  </enum>
+
+  <enum id="org.gnome.shell.extensions.window-tabs.CloseTabAction">
+    <value nick="close-window" value="0"/>
+    <value nick="minimize-window" value="1"/>
+    <value nick="remove-from-group" value="2"/>
+  </enum>
+
   <schema id="org.gnome.shell.extensions.window-tabs" path="/org/gnome/shell/extensions/window-tabs/">
 
     <!-- Appearance Settings -->
@@ -46,18 +59,15 @@
       </description>
     </key>
 
+    <!-- Application Filter -->
+    <key name="enabled-apps" type="as">
+      <default>[]</default>
+      <summary>Enabled applications</summary>
+      <description>
+        List of application IDs that should use window tabs (e.g., "org.gnome.Terminal.desktop", "firefox.desktop"). If empty, no applications will have tabs.
+      </description>
+    </key>
+
   </schema>
-
-  <!-- Enums -->
-  <enum id="org.gnome.shell.extensions.window-tabs.TabPosition">
-    <value nick="top-panel" value="0"/>
-    <value nick="window-title-bar" value="1"/>
-  </enum>
-
-  <enum id="org.gnome.shell.extensions.window-tabs.CloseTabAction">
-    <value nick="close-window" value="0"/>
-    <value nick="minimize-window" value="1"/>
-    <value nick="remove-from-group" value="2"/>
-  </enum>
 
 </schemalist>
